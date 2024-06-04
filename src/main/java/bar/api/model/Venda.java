@@ -1,43 +1,49 @@
 package bar.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.Instant;
 
 @Entity
 @Table(name = "venda")
 public class Venda implements Serializable {
 
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
+
     @Embedded
     private VendaFk fk;
-    @Column(name = "quantidade", nullable = false)
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties(value = {"userId", "password", "email", "registrationDate", "roles"})
+    private User user;
+
     private Integer quantidade;
-    @Column(name = "descricao", nullable = true)
-    private String descricao;
-    @Column(name = "dataVenda", nullable = false)
-    private LocalDate dataVenda;
-    @Column(name = "dataPagamento", nullable = true)
-    private LocalDate dataPagamento;
-    @Column(name = "status", nullable = true)
+
+    @CreationTimestamp
+    private Instant dataVenda;
+
+    private Instant dataPagamento;
+
     private Boolean status;
-    @Column(name = "aviso", nullable = true)
+
     private String aviso;
-    @Column(name = "pagamentoParcial", nullable = true)
+
     private Double pagamentoParcial;
 
     public Venda() {
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -57,27 +63,19 @@ public class Venda implements Serializable {
         this.quantidade = quantidade;
     }
 
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public LocalDate getDataVenda() {
+    public Instant getDataVenda() {
         return dataVenda;
     }
 
-    public void setDataVenda(LocalDate dataVenda) {
+    public void setDataVenda(Instant dataVenda) {
         this.dataVenda = dataVenda;
     }
 
-    public LocalDate getDataPagamento() {
+    public Instant getDataPagamento() {
         return dataPagamento;
     }
 
-    public void setDataPagamento(LocalDate dataPagamento) {
+    public void setDataPagamento(Instant dataPagamento) {
         this.dataPagamento = dataPagamento;
     }
 
@@ -103,5 +101,13 @@ public class Venda implements Serializable {
 
     public void setPagamentoParcial(Double pagamentoParcial) {
         this.pagamentoParcial = pagamentoParcial;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

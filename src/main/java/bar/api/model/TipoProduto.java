@@ -10,25 +10,28 @@ import java.util.List;
 @Table(name = "tipoProduto")
 public class TipoProduto implements Serializable {
     @Id
-    @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
-    @Column(name = "nome",nullable = false, unique = true)
     private String nome;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties(value = {"userId", "password", "email", "registrationDate", "roles"})
+    private User user;
+
     @OneToMany(mappedBy = "tipo")
-    @JsonIgnoreProperties(value = {"tipo"})
+    @JsonIgnoreProperties(value = {"tipo", "vendas"})
     private List<Produto> produtos;
 
     public TipoProduto() {
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -46,5 +49,13 @@ public class TipoProduto implements Serializable {
 
     public void setProdutos(List<Produto> produtos) {
         this.produtos = produtos;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

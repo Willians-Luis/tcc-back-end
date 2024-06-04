@@ -11,11 +11,9 @@ import java.util.List;
 public class Produto implements Serializable {
 
     @Id
-    @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
-    @Column(name = "nome", nullable = false)
     private String nome;
 
     @ManyToOne
@@ -23,17 +21,22 @@ public class Produto implements Serializable {
     @JsonIgnoreProperties(value = {"produtos"})
     private TipoProduto tipo;
 
-    @Column(name = "quantidade", nullable = false)
     private Integer quantidade;
 
-    @Column(name = "valorCusto", nullable = false)
     private Double valorCusto;
 
-    @Column(name = "valorVenda", nullable = false)
     private Double valorVenda;
 
-    @Column(name = "descricao", nullable = true)
     private String descricao;
+
+    private String textColor;
+
+    private String backgroundColor;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties(value = {"userId", "password", "email", "registrationDate", "roles"})
+    private User user;
 
     @OneToMany(mappedBy = "fk.produto")
     private List<Venda> vendas;
@@ -41,11 +44,11 @@ public class Produto implements Serializable {
     public Produto() {
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -89,6 +92,13 @@ public class Produto implements Serializable {
         this.valorVenda = valorVenda;
     }
 
+    public User getUser() {
+        return user;
+    }
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public List<Venda> getVendas() {
         return vendas;
     }
@@ -103,5 +113,21 @@ public class Produto implements Serializable {
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
+    }
+
+    public String getTextColor() {
+        return textColor;
+    }
+
+    public void setTextColor(String textColor) {
+        this.textColor = textColor;
+    }
+
+    public String getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(String backgroundColor) {
+        this.backgroundColor = backgroundColor;
     }
 }

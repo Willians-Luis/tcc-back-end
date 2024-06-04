@@ -4,6 +4,7 @@ import bar.api.model.Venda;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDate;
 
 @Service
@@ -13,7 +14,7 @@ public class PagamentoService {
 
     public void realizarPagamentoIntegral(Venda venda) {
         venda.setStatus(false);
-        venda.setDataPagamento(LocalDate.now());
+        venda.setDataPagamento(Instant.now());
         venda.setPagamentoParcial(0.0);
         venda.setAviso("Pago!");
         vendaService.gravar(venda);
@@ -22,7 +23,7 @@ public class PagamentoService {
     public void realizarPagamentoParcial(Venda venda, Double valorParcial) {
         venda.setPagamentoParcial(valorParcial);
         venda.setAviso("Pago parcialmente!");
-        venda.setDataPagamento(LocalDate.now());
+        venda.setDataPagamento(Instant.now());
         vendaService.gravar(venda);
     }
 }

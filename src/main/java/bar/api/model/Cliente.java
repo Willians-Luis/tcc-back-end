@@ -1,9 +1,11 @@
 package bar.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.List;
 
 @Entity
@@ -11,18 +13,20 @@ import java.util.List;
 public class Cliente implements Serializable {
 
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
-    @Column(name = "nome",nullable = false, unique = true)
     private String nome;
 
-    @Column(name = "telefone", nullable = true)
     private String telefone;
 
-    @Column(name = "dataRegistro", nullable = false)
-    private LocalDate dataRegistro;
+    @CreationTimestamp
+    private Instant dataRegistro;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties(value = {"userId", "password", "email", "registrationDate", "roles"})
+    private User user;
 
     @OneToMany(mappedBy = "fk.cliente")
     private List<Venda> vendas;
@@ -30,11 +34,11 @@ public class Cliente implements Serializable {
     public Cliente() {
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -58,12 +62,20 @@ public class Cliente implements Serializable {
         return vendas;
     }
 
-    public LocalDate getDataRegistro() {
+    public Instant getDataRegistro() {
         return dataRegistro;
     }
 
-    public void setDataRegistro(LocalDate dataRegistro) {
+    public void setDataRegistro(Instant dataRegistro) {
         this.dataRegistro = dataRegistro;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public void setVendas(List<Venda> vendas) {

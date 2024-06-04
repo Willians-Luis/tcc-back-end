@@ -9,10 +9,5 @@ import java.time.LocalDate;
 public record VendaRecordDto(
         @Valid @NotNull VendaFk pk,
         @NotNull Integer quantidade,
-        LocalDate dataVenda,
-        LocalDate dataPagamento,
-        Boolean status,
-        String descricao,
-        Double pagamentoParcial,
-        String aviso
+        Boolean status
 ) {}

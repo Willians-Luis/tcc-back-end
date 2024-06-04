@@ -1,6 +1,7 @@
 package bar.api.service;
 
 import bar.api.model.Cliente;
+import bar.api.model.User;
 import bar.api.model.Venda;
 import bar.api.repository.VendaRepository;
 import jakarta.transaction.Transactional;
@@ -13,17 +14,21 @@ import java.util.Optional;
 @Service
 public class VendaService {
     @Autowired
-    private VendaRepository repository;;
-    public List<Venda> getAll() {
-        return repository.findAll();
+    private VendaRepository repository;
+
+    public List<Venda> findVendaByUser(User user) {
+        return repository.findByUser(user);
     }
+
     @Transactional
     public Venda gravar(Venda venda) {
         return repository.save(venda);
     }
-    public Optional<Venda> getId(Integer id) {
+
+    public Optional<Venda> getId(Long id) {
         return repository.findById(id);
     }
+
     @Transactional
     public void deletar(Optional<Venda> venda) {
         repository.delete(venda.get());
