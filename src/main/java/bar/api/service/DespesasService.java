@@ -19,6 +19,10 @@ public class DespesasService {
         return repository.findByUser(user);
     }
 
+    public List<Despesas> findByUserAndAnoAndMes(User user, Integer ano, Integer mes) {
+        return repository.findByUserAndAnoAndMes(user, ano, mes);
+    }
+
     @Transactional
     public Despesas gravar(Despesas despesa) {
         return repository.save(despesa);

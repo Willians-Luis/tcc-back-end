@@ -33,6 +33,8 @@ public class Produto implements Serializable {
 
     private String backgroundColor;
 
+    private String borderColor;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonIgnoreProperties(value = {"userId", "password", "email", "registrationDate", "roles"})
@@ -95,6 +97,7 @@ public class Produto implements Serializable {
     public User getUser() {
         return user;
     }
+
     public void setUser(User user) {
         this.user = user;
     }
@@ -129,5 +132,13 @@ public class Produto implements Serializable {
 
     public void setBackgroundColor(String backgroundColor) {
         this.backgroundColor = backgroundColor;
+    }
+
+    public String getBorderColor() {
+        return borderColor;
+    }
+
+    public void setBorderColor(String borderColor) {
+        this.borderColor = borderColor;
     }
 }

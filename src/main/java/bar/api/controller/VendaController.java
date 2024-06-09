@@ -1,13 +1,9 @@
 package bar.api.controller;
 
 import bar.api.dto.VendaRecordDto;
-import bar.api.model.Cliente;
-import bar.api.model.Produto;
-import bar.api.model.Venda;
-import bar.api.model.VendaFk;
+import bar.api.model.*;
 import bar.api.repository.UserRepository;
 import bar.api.service.ClienteService;
-import bar.api.service.PagamentoService;
 import bar.api.service.ProdutoService;
 import bar.api.service.VendaService;
 import jakarta.validation.Valid;
@@ -18,9 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/venda")
@@ -33,9 +29,6 @@ public class VendaController {
 
     @Autowired
     private ClienteService clienteService;
-
-    @Autowired
-    private PagamentoService pagamentoService;
 
     @Autowired
     private UserRepository userRepository;
@@ -59,6 +52,17 @@ public class VendaController {
         return ResponseEntity.status(HttpStatus.OK).body(v);
     }
 
+    @GetMapping("/date/{ano}/{mes}")
+    public ResponseEntity<List<Venda>> buscarVendasByDate(@PathVariable(value = "ano") Integer ano,
+                                                               @PathVariable(value = "mes") Integer mes,
+                                                               JwtAuthenticationToken token) {
+
+        //var user = userRepository.findById(UUID.fromString(token.getName()));
+        var user = userRepository.findById(Long.parseLong(token.getName()));
+
+        return ResponseEntity.status(HttpStatus.OK).body(service.findByUserAndAnoPagamentoAndMesPagamento(user.get(), ano, mes));
+    }
+
     @PostMapping
     public ResponseEntity<Object> gravar(@RequestBody @Valid VendaRecordDto vendaRecordDto, JwtAuthenticationToken token) {
 
@@ -79,7 +83,6 @@ public class VendaController {
 
         newVenda.setFk(pk);
         newVenda.setStatus(true);
-        newVenda.setPagamentoParcial(0.0);
         newVenda.setUser(user.get());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(service.gravar(newVenda));
@@ -113,8 +116,12 @@ public class VendaController {
 
         if (v.isEmpty()) {return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Venda não encontrada!");}
 
+        LocalDate dataAtual = LocalDate.now();
+
         Venda newVenda = v.get();
         newVenda.setStatus(false);
+        newVenda.setAnoPagamento(dataAtual.getYear());
+        newVenda.setMesPagamento(dataAtual.getMonthValue());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(service.gravar(newVenda));
     }
@@ -133,9 +140,13 @@ public class VendaController {
 
     @GetMapping("/cliente/{id}")
     public ResponseEntity<Object> buscarVendaClinente(@PathVariable(value = "id") Long id) {
+
         Optional<Cliente> c = clienteService.getId(id);
+
         if (c.isEmpty()) {return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente não encontrado!");}
+
         List<Venda> vendas = service.findByCliente(c.get());
+
         return ResponseEntity.status(HttpStatus.OK).body(vendas);
     }
 
@@ -150,12 +161,8 @@ public class VendaController {
         return ResponseEntity.status(HttpStatus.OK).body(vendas);
     }
 
-    @PutMapping("/pagarVarios/{clienteId}/{valor}/{desconto}")
-    public ResponseEntity<Object> pagamento(
-            @PathVariable(value = "clienteId") Long clienteId,
-            @PathVariable(value = "valor") Double valor,
-            @PathVariable(value = "desconto") Double desconto
-    ) {
+    @PutMapping("/pagarVarios/{clienteId}")
+    public ResponseEntity<Object> pagamento(@PathVariable(value = "clienteId") Long clienteId) {
 
         Optional<Cliente> clienteOptional = clienteService.getId(clienteId);
 
@@ -171,18 +178,52 @@ public class VendaController {
             return ResponseEntity.status(HttpStatus.OK).body("Não à debitos pendentes!");
         }
 
+        LocalDate dataAtual = LocalDate.now();
+
         for (Venda venda : vendas) {
-            Double subtotal = (venda.getFk().getProduto().getValorVenda() * venda.getQuantidade()) - venda.getPagamentoParcial();
-            Double valorTotal = valor + desconto;
-            if (valorTotal >= subtotal) {
-                pagamentoService.realizarPagamentoIntegral(venda);
-                valorTotal -= subtotal;
-            } else {
-                pagamentoService.realizarPagamentoParcial(venda, valorTotal);
-                return ResponseEntity.status(HttpStatus.OK).body("Pagamento parcial realizado com sucesso!");
-            }
+            venda.setStatus(false);
+            venda.setAnoPagamento(dataAtual.getYear());
+            venda.setMesPagamento(dataAtual.getMonthValue());
+            service.gravar(venda);
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body("Pagamento total realizado com sucesso!");
+        return ResponseEntity.status(HttpStatus.OK).body("Pagamento realizado com sucesso!");
     }
 }
+
+//    @PutMapping("/pagarVarios/{clienteId}/{valor}/{desconto}")
+//    public ResponseEntity<Object> pagamento(
+//            @PathVariable(value = "clienteId") Long clienteId,
+//            @PathVariable(value = "valor") Double valor,
+//            @PathVariable(value = "desconto") Double desconto
+//    ) {
+//
+//        Optional<Cliente> clienteOptional = clienteService.getId(clienteId);
+//
+//        if (clienteOptional.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente não encontrado!");
+//        }
+//
+//        Cliente cliente = clienteOptional.get();
+//
+//        List<Venda> vendas = service.findByClienteAndStatus(cliente, true);
+//
+//        if (vendas.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.OK).body("Não à debitos pendentes!");
+//        }
+//
+//        for (Venda venda : vendas) {
+//            Double subtotal = (venda.getFk().getProduto().getValorVenda() * venda.getQuantidade()) - venda.getPagamentoParcial();
+//            Double valorTotal = valor + desconto;
+//            if (valorTotal >= subtotal) {
+//                pagamentoService.realizarPagamentoIntegral(venda);
+//                valorTotal -= subtotal;
+//            } else {
+//                pagamentoService.realizarPagamentoParcial(venda, valorTotal);
+//                return ResponseEntity.status(HttpStatus.OK).body("Pagamento parcial realizado com sucesso!");
+//            }
+//        }
+//
+//        return ResponseEntity.status(HttpStatus.OK).body("Pagamento total realizado com sucesso!");
+//    }
+

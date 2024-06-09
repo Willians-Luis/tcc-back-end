@@ -28,13 +28,12 @@ public class Venda implements Serializable {
     @CreationTimestamp
     private Instant dataVenda;
 
-    private Instant dataPagamento;
+    private Integer anoPagamento;
+
+    private Integer mesPagamento;
 
     private Boolean status;
 
-    private String aviso;
-
-    private Double pagamentoParcial;
 
     public Venda() {
     }
@@ -55,6 +54,14 @@ public class Venda implements Serializable {
         this.fk = fk;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public Integer getQuantidade() {
         return quantidade;
     }
@@ -71,12 +78,20 @@ public class Venda implements Serializable {
         this.dataVenda = dataVenda;
     }
 
-    public Instant getDataPagamento() {
-        return dataPagamento;
+    public Integer getAnoPagamento() {
+        return anoPagamento;
     }
 
-    public void setDataPagamento(Instant dataPagamento) {
-        this.dataPagamento = dataPagamento;
+    public void setAnoPagamento(Integer anoPagamento) {
+        this.anoPagamento = anoPagamento;
+    }
+
+    public Integer getMesPagamento() {
+        return mesPagamento;
+    }
+
+    public void setMesPagamento(Integer mesPagamento) {
+        this.mesPagamento = mesPagamento;
     }
 
     public Boolean getStatus() {
@@ -85,29 +100,5 @@ public class Venda implements Serializable {
 
     public void setStatus(Boolean status) {
         this.status = status;
-    }
-
-    public String getAviso() {
-        return aviso;
-    }
-
-    public void setAviso(String aviso) {
-        this.aviso = aviso;
-    }
-
-    public Double getPagamentoParcial() {
-        return pagamentoParcial;
-    }
-
-    public void setPagamentoParcial(Double pagamentoParcial) {
-        this.pagamentoParcial = pagamentoParcial;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 }

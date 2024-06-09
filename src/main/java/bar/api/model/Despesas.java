@@ -2,8 +2,10 @@ package bar.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.io.Serializable;
+import java.time.Instant;
 
 @Entity
 @Table(name = "despesas")
@@ -23,6 +25,16 @@ public class Despesas implements Serializable {
     private Integer ano;
 
     private Integer mes;
+
+    private String tipo;
+
+    private String descricao;
+
+    @CreationTimestamp
+    private Instant dataRegistro;
+
+    public Despesas() {
+    }
 
     public Long getId() {
         return id;
@@ -62,5 +74,29 @@ public class Despesas implements Serializable {
 
     public void setMes(Integer mes) {
         this.mes = mes;
+    }
+
+    public Instant getDataRegistro() {
+        return dataRegistro;
+    }
+
+    public void setDataRegistro(Instant dataRegistro) {
+        this.dataRegistro = dataRegistro;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 }

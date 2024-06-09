@@ -33,8 +33,20 @@ public class DespesasController {
         return ResponseEntity.status(HttpStatus.OK).body(service.findDespesasByUser(user.get()));
     }
 
+    @GetMapping("/date/{ano}/{mes}")
+    public ResponseEntity<List<Despesas>> buscarDespesasByDate(@PathVariable(value = "ano") Integer ano,
+                                                               @PathVariable(value = "mes") Integer mes,
+                                                               JwtAuthenticationToken token) {
+
+        //var user = userRepository.findById(UUID.fromString(token.getName()));
+        var user = userRepository.findById(Long.parseLong(token.getName()));
+
+        return ResponseEntity.status(HttpStatus.OK).body(service.findByUserAndAnoAndMes(user.get(), ano, mes));
+    }
+
+
     @GetMapping("/{id}")
-    public ResponseEntity<Object> buscarDespesas(@PathVariable(value = "id") Long id) {
+    public ResponseEntity<Object> buscarDespesa(@PathVariable(value = "id") Long id) {
 
         Optional<Despesas> d = service.getId(id);
 
@@ -71,6 +83,8 @@ public class DespesasController {
         newDespesa.setValor(despesasRecordDto.valor());
         newDespesa.setAno(despesasRecordDto.ano());
         newDespesa.setMes(despesasRecordDto.mes());
+        newDespesa.setDescricao(despesasRecordDto.descricao());
+        newDespesa.setTipo(despesasRecordDto.tipo());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(service.gravar(newDespesa));
     }

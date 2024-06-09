@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/produto")
@@ -87,6 +86,7 @@ public class ProdutoController {
         newProduto.setValorVenda(produtoRecordDto.valorVenda());
         newProduto.setTextColor(produtoRecordDto.textColor());
         newProduto.setBackgroundColor(produtoRecordDto.backgroundColor());
+        newProduto.setBorderColor(produtoRecordDto.borderColor());
         newProduto.setDescricao(produtoRecordDto.descricao());
 
         if (!p.get().getNome().equalsIgnoreCase(produtoRecordDto.nome())) {

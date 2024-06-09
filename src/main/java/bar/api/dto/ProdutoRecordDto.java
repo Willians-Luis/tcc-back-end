@@ -1,7 +1,6 @@
 package bar.api.dto;
 
 import bar.api.model.TipoProduto;
-import bar.api.model.User;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -13,5 +12,6 @@ public record ProdutoRecordDto(
         @NotNull Double valorVenda,
         String textColor,
         String backgroundColor,
+        String borderColor,
         String descricao
 ) {}

@@ -1,11 +1,24 @@
+version: "3.9"
+
 services:
   mysql:
-    image: mysql
+    image: mysql:8.0
+    container_name: toca-o-negocio  # Convenção de nomenclatura consistente
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: tocaonegocio
+    volumes:
+      - ./data:/var/lib/mysql  # Armazenamento de dados persistente
     ports:
       - "3306:3306"
-    expose:
-      - "3306"
-    environment:
-        - MYSQL_ROOT_PASSWORD: 1234
-        - MYSQL_DATABASE: bar
-
+#    command:
+#      sh -c '
+#      echo "Criando banco de dados tocaonegocio..."
+#      mysql -u root -p'"$MYSQL_ROOT_PASSWORD"' << EOF
+#      CREATE DATABASE tocaonegocio;
+#      EOF
+#      echo "Importando dump data-toca-o-negocio.sql..."
+#      mysql -u root -p'"$MYSQL_ROOT_PASSWORD"' tocaonegocio < data-toca-o-negocio.sql
+#      echo "Banco de dados e dump importados com sucesso!"
+#      '

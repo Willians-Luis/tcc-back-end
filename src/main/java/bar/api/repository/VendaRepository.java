@@ -1,11 +1,13 @@
 package bar.api.repository;
 
 import bar.api.model.Cliente;
+import bar.api.model.Despesas;
 import bar.api.model.User;
 import bar.api.model.Venda;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -17,4 +19,7 @@ public interface VendaRepository extends JpaRepository<Venda, Long> {
     List<Venda> findByFkClienteAndStatus(Cliente cliente, boolean status);
 
     List<Venda> findByUser(User user);
+
+    List<Venda> findByUserAndAnoPagamentoAndMesPagamento(User user, Integer ano, Integer mes);
+
 }

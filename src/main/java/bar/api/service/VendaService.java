@@ -1,6 +1,7 @@
 package bar.api.service;
 
 import bar.api.model.Cliente;
+import bar.api.model.Despesas;
 import bar.api.model.User;
 import bar.api.model.Venda;
 import bar.api.repository.VendaRepository;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+
 @Service
 public class VendaService {
     @Autowired
@@ -18,6 +20,10 @@ public class VendaService {
 
     public List<Venda> findVendaByUser(User user) {
         return repository.findByUser(user);
+    }
+
+    public List<Venda> findByUserAndAnoPagamentoAndMesPagamento(User user, Integer ano, Integer mes) {
+        return repository.findByUserAndAnoPagamentoAndMesPagamento(user, ano, mes);
     }
 
     @Transactional

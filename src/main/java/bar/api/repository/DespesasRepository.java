@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface DespesasRepository extends JpaRepository<Despesas, Long> {
     List<Despesas> findByUser(User user);
+
+    List<Despesas> findByUserAndAnoAndMes(User user, Integer ano, Integer mes);
 }
